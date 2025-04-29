@@ -1,5 +1,5 @@
 function createExamplePoint4ConfidenceRegionC(actual, ua, beta, Ubeta, dataName, phi, psi, SixSigmaRule)
-% createExamplePoint4ConfidenceRegionC - Plot (fitted - actual) differences and Region C
+% createExamplePoint4ConfidenceRegionC - Plot (fitted - actual) differences and Region C with full detail
 %
 % Inputs:
 %   actual      - vector of actual measured values
@@ -27,14 +27,14 @@ sigx = 0.0008;  % standard deviation of device measurement capability
 n_phi = norminv(1 - phi/2);
 n_psi = norminv(1 - psi/2);
 
-% Grid across full actual range
+% Grid across the full range of actual values
 xx = linspace(min(actual), max(actual), 101)';
 XX = [ones(size(xx)), xx, xx.^2];
 
-% Main prediction
+% Main fitted prediction
 yhat = XX * beta;
 
-% Shifted grids for device uncertainty
+% Shifted grids considering uncertainty
 xx_minus = xx - n_psi * sigx;
 XX_minus = [ones(size(xx_minus)), xx_minus, xx_minus.^2];
 yhat_minus = XX_minus * beta;
@@ -45,14 +45,33 @@ XX_plus = [ones(size(xx_plus)), xx_plus, xx_plus.^2];
 yhat_plus = XX_plus * beta;
 ci_plus = n_phi * sqrt(sum((XX_plus * Ubeta) .* XX_plus, 2));
 
-% External tolerance (Region C bounds)
-MPE_plus = (1.8 + 3.33 * xx / 1000) / 1000;
-MPE_minus = -(1.8 + 3.33 * xx / 1000) / 1000;
+% External tolerance lines (Region C limits)
+regionC_upper = (1.8 + 3.33 * xx / 1000) / 1000;
+regionC_lower = (-1.8 - 3.33 * xx / 1000) / 1000;
 
-% Plot
+%% Plot
 figure
 hold on
 grid on
+
+% Main (fitted - actual) line
 plot(xx, yhat - xx, 'b-', 'DisplayName', 'Fitted - Actual')
-plot(xx, yhat_minus - xx - ci_minus, 'k--', 'DisplayName', 'Lower Bound C')
-plot
+
+% Confidence bounds with device uncertainty
+plot(xx, yhat_minus - ci_minus - xx, 'k--', 'DisplayName', 'Lower Bound C')
+plot(xx, yhat_plus + ci_plus - xx, 'k--', 'DisplayName', 'Upper Bound C')
+
+% Region C tolerance limits
+plot(xx, regionC_upper, 'm--', 'DisplayName', '+Region C Limit')
+plot(xx, regionC_lower, 'm--', 'DisplayName', '-Region C Limit')
+
+xlabel('x (mm)')
+ylabel('y - x (mm)')
+title(sprintf('%s - Confidence Region C', dataName))
+legend('Location', 'northwest')
+hold off
+
+% Save figure
+savefig(sprintf('Fig_%s_Point%d_ConfidenceRegionC.fig', dataName, pointid));
+
+end
