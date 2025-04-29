@@ -1,0 +1,380 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      -->
+<title>DATA_ANALYSES</title>
+<meta name="generator" content="MATLAB 24.2">
+<link rel="schema.DC" href="http://purl.org/dc/elements/1.1/">
+<meta name="DC.date" content="2025-04-29">
+<meta name="DC.source" content="DATA_ANALYSES.m">
+<style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; }
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+span.typesection { color:#A0522D }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style>
+</head>
+<body>
+<div class="content">
+<h2>Contents</h2>
+<div>
+<ul>
+<li>
+<a href="#1">DATA_ANALYSES.m - Perform calibration data analyses using OEFPIL</a>
+</li>
+<li>
+<a href="#2">load NEW DATA</a>
+</li>
+<li>
+<a href="#3">User settings: Significance levels and error bar settings</a>
+</li>
+<li>
+<a href="#4">Define datasets and their display names</a>
+</li>
+<li>
+<a href="#5">Initialize storage for results</a>
+</li>
+<li>
+<a href="#6">Analyze each dataset individually</a>
+</li>
+</ul>
+</div>
+<h2 id="1">DATA_ANALYSES.m - Perform calibration data analyses using OEFPIL</h2>
+<p>This script processes several calibration datasets, fitting a quadratic model to the relationship between actual (measured) and nominal (benchmark) values. The fitting uses the OEFPIL algorithm (Optimal Estimation in Functional Problems with Independent Linear Constraints) to properly account for uncertainties in both the actual and nominal values.</p>
+<p>The analysis is based on the procedure described in the paper: "Determination of the Uncertainty of Length Measurement with a Three-Coordinate Measuring Device" by Gejza Wimmer, Jakub Palenč&aacute;r, Miroslav Dovica, Rudolf Palenč&aacute;r, Teodor T&oacute;th, Viktor Witkovsk&yacute;, XXIV IMEKO World Congress &ldquo;Think Metrology&rdquo;, August 26 - 29, 2024, Hamburg, Germany, IMEKO 2024.</p>
+<pre class="codeinput">close <span class="string">all</span>
+clear
+</pre>
+<h2 id="2">load NEW DATA</h2>
+<pre class="codeinput">load(<span class="string">"WIMMER_Ddata_2025.mat"</span>)
+</pre>
+<h2 id="3">User settings: Significance levels and error bar settings</h2>
+<pre class="codeinput">phi = 0.025;              <span class="comment">% Significance level for model confidence intervals (default 0.025)</span>
+psi = 0.025;              <span class="comment">% Significance level for measurement uncertainty intervals (default 0.025)</span>
+ErrorBarSigmaRule = 1;    <span class="comment">% Number of sigmas for error bars (default 1)</span>
+SixSigmaRule = 10;        <span class="comment">% Range multiplier for plotting fine grid (default 10)</span>
+</pre>
+<h2 id="4">Define datasets and their display names</h2>
+<pre class="codeinput">datasetNames = {<span class="string">'X_data'</span>, <span class="string">'Y_data'</span>, <span class="string">'Z_data'</span>, <span class="string">'R3D_PL_data'</span>, <span class="string">'R3D_PP_data'</span>, <span class="keyword">...</span>
+                <span class="string">'R3D_ZL_data'</span>, <span class="string">'R3D_ZP_data'</span>};
+
+displayNames = {<span class="string">'X'</span>, <span class="string">'Y'</span>, <span class="string">'Z'</span>, <span class="string">'R3DPL'</span>, <span class="string">'R3DPP'</span>, <span class="string">'R3DZL'</span>, <span class="string">'R3DZP'</span>};
+</pre>
+<h2 id="5">Initialize storage for results</h2>
+<pre class="codeinput">results = cell(1, length(datasetNames));
+</pre>
+<h2 id="6">Analyze each dataset individually</h2>
+<pre class="codeinput">
+<span class="keyword">for</span> idx = 1:length(datasetNames)
+
+    <span class="comment">% Load dataset</span>
+    data = eval(datasetNames{idx});
+
+    <span class="comment">% Extract raw measured data for possible extensions (currently not used inside makeDataAnalysis)</span>
+    <span class="comment">% These are the repeated measurements (triplets per position)</span>
+    id_row_data = [1:3, 5:7, 9:11, 13:15, 17:19];
+    id_col_data = 3:7;
+    raw_data = data(id_row_data, id_col_data);
+
+    <span class="comment">% Extract 'actual' measured values (average of 3 measurements for each position)</span>
+    id_row_actual = [2, 6, 10, 14, 18];  <span class="comment">% Use second row of each triplet</span>
+    id_col_actual = 8;                   <span class="comment">% Column with mean values</span>
+    actual = data(id_row_actual, id_col_actual);
+
+    <span class="comment">% Extract uncertainties of 'actual' measured values</span>
+    id_row_actual_uncertainty = [2, 6, 10, 14, 18];
+    id_col_actual_uncertainty = 9;        <span class="comment">% Column with standard deviations</span>
+    ua = data(id_row_actual_uncertainty, id_col_actual_uncertainty);
+
+    <span class="comment">% Extract 'nominal' (benchmark) values</span>
+    id_row_nominal = [2, 6, 10, 14, 18];
+    id_col_nominal = 2;                   <span class="comment">% Column with benchmark values</span>
+    nominal = data(id_row_nominal, id_col_nominal);
+
+    <span class="comment">% Extract uncertainties of 'nominal' values</span>
+    id_row_nominal_uncertainty = [2, 6, 10, 14, 18];
+    id_col_nominal_uncertainty = 1;        <span class="comment">% Column with uncertainties</span>
+    un = data(id_row_nominal_uncertainty, id_col_nominal_uncertainty) / 1000;
+    <span class="comment">% Note: Divide by 1000 to convert from micrometers (&micro;m) to millimeters (mm)</span>
+
+    <span class="comment">% Perform analysis and store result</span>
+    results{idx} = makeDataAnalysis(nominal, un, actual, ua, raw_data, <span class="keyword">...</span>
+                                    displayNames{idx}, <span class="keyword">...</span>
+                                    phi, psi, ErrorBarSigmaRule, SixSigmaRule);
+<span class="keyword">end</span>
+</pre>
+<pre class="codeoutput"> ------------------------------------------------------------------------------- 
+    OEFPIL ESTIMATION METHOD = oefpilrs2
+    fun = @(mu,nu,beta)beta(1)+beta(2).*mu+beta(3).*mu.^2-nu
+ ------------------------------------------------------------------------------- 
+    N     n    m    p    q    ITERATIONS    CRITERION     CONSTRAINTS_SSE    OBJECTIVE_SSE    ChiSquare_Stat    df    ChiSquare_Pval    sigma2Hat
+    __    _    _    _    _    __________    __________    _______________    _____________    ______________    __    ______________    _________
+
+    10    2    5    3    5        3         1.5888e-15      1.5888e-15          1.2199            1.2199        2        0.54338         0.60995 
+
+ ------------------------------------------------------------------------------- 
+               ESTIMATE        STD        FACTOR       LOWER         UPPER         PVAL   
+              __________    __________    ______    ___________    __________    _________
+
+    beta_1    8.6641e-05    8.6807e-05     1.96     -8.3497e-05    0.00025678      0.31824
+    beta_2             1    1.1101e-06     1.96         0.99999             1            0
+    beta_3    5.7849e-09    1.8827e-09     1.96      2.0949e-09    9.4749e-09    0.0021217
+
+ ------------------------------------------------------------------------------- 
+ ------------------------------------------------------------------------------- 
+    OEFPIL ESTIMATION METHOD = oefpilrs2
+    fun = @(mu,nu,beta)beta(1)+beta(2).*mu+beta(3).*mu.^2-nu
+ ------------------------------------------------------------------------------- 
+    N     n    m    p    q    ITERATIONS    CRITERION     CONSTRAINTS_SSE    OBJECTIVE_SSE    ChiSquare_Stat    df    ChiSquare_Pval    sigma2Hat
+    __    _    _    _    _    __________    __________    _______________    _____________    ______________    __    ______________    _________
+
+    10    2    5    3    5        24        1.5888e-15      1.5888e-15         0.081255          0.081255       2        0.96019        0.040628 
+
+ ------------------------------------------------------------------------------- 
+               ESTIMATE         STD        FACTOR       LOWER          UPPER          PVAL   
+              ___________    __________    ______    ___________    ___________    __________
+
+    beta_1    -0.00034441    7.9992e-05     1.96     -0.00050119    -0.00018762    1.6662e-05
+    beta_2              1    1.1691e-06     1.96         0.99999              1             0
+    beta_3     5.9349e-09    2.2486e-09     1.96      1.5277e-09     1.0342e-08     0.0083061
+
+ ------------------------------------------------------------------------------- 
+ ------------------------------------------------------------------------------- 
+    OEFPIL ESTIMATION METHOD = oefpilrs2
+    fun = @(mu,nu,beta)beta(1)+beta(2).*mu+beta(3).*mu.^2-nu
+ ------------------------------------------------------------------------------- 
+    N     n    m    p    q    ITERATIONS    CRITERION    CONSTRAINTS_SSE    OBJECTIVE_SSE    ChiSquare_Stat    df    ChiSquare_Pval    sigma2Hat
+    __    _    _    _    _    __________    _________    _______________    _____________    ______________    __    ______________    _________
+
+    10    2    5    3    5        47            0               0              0.41303          0.41303        2        0.81341         0.20652 
+
+ ------------------------------------------------------------------------------- 
+               ESTIMATE         STD        FACTOR       LOWER          UPPER          PVAL   
+              ___________    __________    ______    ___________    ___________    __________
+
+    beta_1    -0.00036263    8.1643e-05     1.96     -0.00052265    -0.00020261    8.9277e-06
+    beta_2              1    1.0617e-06     1.96               1              1             0
+    beta_3      1.243e-09    2.2714e-09     1.96     -3.2088e-09     5.6948e-09       0.58422
+
+ ------------------------------------------------------------------------------- 
+ ------------------------------------------------------------------------------- 
+    OEFPIL ESTIMATION METHOD = oefpilrs2
+    fun = @(mu,nu,beta)beta(1)+beta(2).*mu+beta(3).*mu.^2-nu
+ ------------------------------------------------------------------------------- 
+    N     n    m    p    q    ITERATIONS    CRITERION    CONSTRAINTS_SSE    OBJECTIVE_SSE    ChiSquare_Stat    df    ChiSquare_Pval    sigma2Hat
+    __    _    _    _    _    __________    _________    _______________    _____________    ______________    __    ______________    _________
+
+    10    2    5    3    5        11            0               0              0.37039          0.37039        2        0.83094         0.18519 
+
+ ------------------------------------------------------------------------------- 
+               ESTIMATE         STD        FACTOR       LOWER         UPPER         PVAL  
+              ___________    __________    ______    ___________    __________    ________
+
+    beta_1     0.00031239    0.00013201     1.96      5.3662e-05    0.00057112    0.017958
+    beta_2              1    1.3335e-06     1.96               1             1           0
+    beta_3    -1.1858e-09    2.1908e-09     1.96     -5.4796e-09    3.1081e-09     0.58834
+
+ ------------------------------------------------------------------------------- 
+ ------------------------------------------------------------------------------- 
+    OEFPIL ESTIMATION METHOD = oefpilrs2
+    fun = @(mu,nu,beta)beta(1)+beta(2).*mu+beta(3).*mu.^2-nu
+ ------------------------------------------------------------------------------- 
+    N     n    m    p    q    ITERATIONS    CRITERION    CONSTRAINTS_SSE    OBJECTIVE_SSE    ChiSquare_Stat    df    ChiSquare_Pval    sigma2Hat
+    __    _    _    _    _    __________    _________    _______________    _____________    ______________    __    ______________    _________
+
+    10    2    5    3    5        14            0               0              0.4518            0.4518        2         0.7978         0.2259  
+
+ ------------------------------------------------------------------------------- 
+               ESTIMATE         STD        FACTOR       LOWER         UPPER          PVAL   
+              ___________    __________    ______    ___________    __________    __________
+
+    beta_1     0.00048167    0.00010673     1.96      0.00027248    0.00069085    6.3895e-06
+    beta_2              1    1.0348e-06     1.96               1             1             0
+    beta_3    -8.0298e-10    1.7057e-09     1.96     -4.1461e-09    2.5401e-09       0.63781
+
+ ------------------------------------------------------------------------------- 
+ ------------------------------------------------------------------------------- 
+    OEFPIL ESTIMATION METHOD = oefpilrs2
+    fun = @(mu,nu,beta)beta(1)+beta(2).*mu+beta(3).*mu.^2-nu
+ ------------------------------------------------------------------------------- 
+    N     n    m    p    q    ITERATIONS    CRITERION    CONSTRAINTS_SSE    OBJECTIVE_SSE    ChiSquare_Stat    df    ChiSquare_Pval    sigma2Hat
+    __    _    _    _    _    __________    _________    _______________    _____________    ______________    __    ______________    _________
+
+    10    2    5    3    5        83            0               0              1.5207            1.5207        2        0.46749         0.76037 
+
+ ------------------------------------------------------------------------------- 
+               ESTIMATE         STD        FACTOR       LOWER         UPPER         PVAL  
+              ___________    __________    ______    ___________    __________    ________
+
+    beta_1     0.00034809     0.0001396     1.96       7.448e-05    0.00062169    0.012649
+    beta_2              1    1.3828e-06     1.96               1             1           0
+    beta_3    -3.0327e-09    2.2495e-09     1.96     -7.4416e-09    1.3763e-09     0.17761
+
+ ------------------------------------------------------------------------------- 
+ ------------------------------------------------------------------------------- 
+    OEFPIL ESTIMATION METHOD = oefpilrs2
+    fun = @(mu,nu,beta)beta(1)+beta(2).*mu+beta(3).*mu.^2-nu
+ ------------------------------------------------------------------------------- 
+    N     n    m    p    q    ITERATIONS    CRITERION    CONSTRAINTS_SSE    OBJECTIVE_SSE    ChiSquare_Stat    df    ChiSquare_Pval    sigma2Hat
+    __    _    _    _    _    __________    _________    _______________    _____________    ______________    __    ______________    _________
+
+    10    2    5    3    5        27            0               0              8.0489            8.0489        2        0.017873        4.0245  
+
+ ------------------------------------------------------------------------------- 
+               ESTIMATE         STD        FACTOR       LOWER          UPPER         PVAL   
+              ___________    __________    ______    ___________    ___________    _________
+
+    beta_1    -0.00030873    0.00013001     1.96     -0.00056354    -5.3922e-05     0.017562
+    beta_2              1    1.1869e-06     1.96               1              1            0
+    beta_3    -6.3755e-09    1.9023e-09     1.96     -1.0104e-08     -2.647e-09    0.0008039
+
+ ------------------------------------------------------------------------------- 
+</pre>
+<img vspace="5" hspace="5" src="DATA_ANALYSES_01.png" alt=""> <img vspace="5" hspace="5" src="DATA_ANALYSES_02.png" alt=""> <img vspace="5" hspace="5" src="DATA_ANALYSES_03.png" alt=""> <img vspace="5" hspace="5" src="DATA_ANALYSES_04.png" alt=""> <img vspace="5" hspace="5" src="DATA_ANALYSES_05.png" alt=""> <img vspace="5" hspace="5" src="DATA_ANALYSES_06.png" alt=""> <img vspace="5" hspace="5" src="DATA_ANALYSES_07.png" alt=""> <img vspace="5" hspace="5" src="DATA_ANALYSES_08.png" alt=""> <img vspace="5" hspace="5" src="DATA_ANALYSES_09.png" alt=""> <img vspace="5" hspace="5" src="DATA_ANALYSES_10.png" alt=""> <img vspace="5" hspace="5" src="DATA_ANALYSES_11.png" alt=""> <img vspace="5" hspace="5" src="DATA_ANALYSES_12.png" alt=""> <img vspace="5" hspace="5" src="DATA_ANALYSES_13.png" alt=""> <img vspace="5" hspace="5" src="DATA_ANALYSES_14.png" alt=""> <img vspace="5" hspace="5" src="DATA_ANALYSES_15.png" alt=""> <img vspace="5" hspace="5" src="DATA_ANALYSES_16.png" alt=""> <img vspace="5" hspace="5" src="DATA_ANALYSES_17.png" alt=""> <img vspace="5" hspace="5" src="DATA_ANALYSES_18.png" alt=""> <img vspace="5" hspace="5" src="DATA_ANALYSES_19.png" alt=""> <img vspace="5" hspace="5" src="DATA_ANALYSES_20.png" alt=""> <img vspace="5" hspace="5" src="DATA_ANALYSES_21.png" alt=""> <img vspace="5" hspace="5" src="DATA_ANALYSES_22.png" alt=""> <img vspace="5" hspace="5" src="DATA_ANALYSES_23.png" alt=""> <img vspace="5" hspace="5" src="DATA_ANALYSES_24.png" alt=""> <img vspace="5" hspace="5" src="DATA_ANALYSES_25.png" alt=""> <img vspace="5" hspace="5" src="DATA_ANALYSES_26.png" alt=""> <img vspace="5" hspace="5" src="DATA_ANALYSES_27.png" alt=""> <img vspace="5" hspace="5" src="DATA_ANALYSES_28.png" alt=""> <img vspace="5" hspace="5" src="DATA_ANALYSES_29.png" alt=""> <img vspace="5" hspace="5" src="DATA_ANALYSES_30.png" alt=""> <img vspace="5" hspace="5" src="DATA_ANALYSES_31.png" alt=""> <img vspace="5" hspace="5" src="DATA_ANALYSES_32.png" alt=""> <img vspace="5" hspace="5" src="DATA_ANALYSES_33.png" alt=""> <img vspace="5" hspace="5" src="DATA_ANALYSES_34.png" alt=""> <img vspace="5" hspace="5" src="DATA_ANALYSES_35.png" alt=""> <img vspace="5" hspace="5" src="DATA_ANALYSES_36.png" alt=""> <img vspace="5" hspace="5" src="DATA_ANALYSES_37.png" alt=""> <img vspace="5" hspace="5" src="DATA_ANALYSES_38.png" alt=""> <img vspace="5" hspace="5" src="DATA_ANALYSES_39.png" alt=""> <img vspace="5" hspace="5" src="DATA_ANALYSES_40.png" alt=""> <img vspace="5" hspace="5" src="DATA_ANALYSES_41.png" alt=""> <img vspace="5" hspace="5" src="DATA_ANALYSES_42.png" alt=""> <img vspace="5" hspace="5" src="DATA_ANALYSES_43.png" alt=""> <img vspace="5" hspace="5" src="DATA_ANALYSES_44.png" alt=""> <img vspace="5" hspace="5" src="DATA_ANALYSES_45.png" alt=""> <img vspace="5" hspace="5" src="DATA_ANALYSES_46.png" alt=""> <img vspace="5" hspace="5" src="DATA_ANALYSES_47.png" alt=""> <img vspace="5" hspace="5" src="DATA_ANALYSES_48.png" alt=""> <img vspace="5" hspace="5" src="DATA_ANALYSES_49.png" alt=""> <img vspace="5" hspace="5" src="DATA_ANALYSES_50.png" alt=""> <img vspace="5" hspace="5" src="DATA_ANALYSES_51.png" alt=""> <img vspace="5" hspace="5" src="DATA_ANALYSES_52.png" alt=""> <img vspace="5" hspace="5" src="DATA_ANALYSES_53.png" alt=""> <img vspace="5" hspace="5" src="DATA_ANALYSES_54.png" alt=""> <img vspace="5" hspace="5" src="DATA_ANALYSES_55.png" alt=""> <img vspace="5" hspace="5" src="DATA_ANALYSES_56.png" alt=""> <img vspace="5" hspace="5" src="DATA_ANALYSES_57.png" alt=""> <img vspace="5" hspace="5" src="DATA_ANALYSES_58.png" alt=""> <img vspace="5" hspace="5" src="DATA_ANALYSES_59.png" alt=""> <img vspace="5" hspace="5" src="DATA_ANALYSES_60.png" alt=""> <img vspace="5" hspace="5" src="DATA_ANALYSES_61.png" alt=""> <img vspace="5" hspace="5" src="DATA_ANALYSES_62.png" alt=""> <img vspace="5" hspace="5" src="DATA_ANALYSES_63.png" alt=""> <img vspace="5" hspace="5" src="DATA_ANALYSES_64.png" alt=""> <img vspace="5" hspace="5" src="DATA_ANALYSES_65.png" alt=""> <img vspace="5" hspace="5" src="DATA_ANALYSES_66.png" alt=""> <img vspace="5" hspace="5" src="DATA_ANALYSES_67.png" alt=""> <img vspace="5" hspace="5" src="DATA_ANALYSES_68.png" alt=""> <img vspace="5" hspace="5" src="DATA_ANALYSES_69.png" alt=""> <img vspace="5" hspace="5" src="DATA_ANALYSES_70.png" alt=""> <img vspace="5" hspace="5" src="DATA_ANALYSES_71.png" alt=""> <img vspace="5" hspace="5" src="DATA_ANALYSES_72.png" alt=""> <img vspace="5" hspace="5" src="DATA_ANALYSES_73.png" alt=""> <img vspace="5" hspace="5" src="DATA_ANALYSES_74.png" alt=""> <img vspace="5" hspace="5" src="DATA_ANALYSES_75.png" alt=""> <img vspace="5" hspace="5" src="DATA_ANALYSES_76.png" alt=""> <img vspace="5" hspace="5" src="DATA_ANALYSES_77.png" alt=""> <img vspace="5" hspace="5" src="DATA_ANALYSES_78.png" alt=""> <img vspace="5" hspace="5" src="DATA_ANALYSES_79.png" alt=""> <img vspace="5" hspace="5" src="DATA_ANALYSES_80.png" alt=""> <img vspace="5" hspace="5" src="DATA_ANALYSES_81.png" alt=""> <img vspace="5" hspace="5" src="DATA_ANALYSES_82.png" alt=""> <img vspace="5" hspace="5" src="DATA_ANALYSES_83.png" alt=""> <img vspace="5" hspace="5" src="DATA_ANALYSES_84.png" alt=""> <p class="footer">
+<br>
+<a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2024b</a>
+<br>
+</p>
+</div>
+<!--
+##### SOURCE BEGIN #####
+%% DATA_ANALYSES.m - Perform calibration data analyses using OEFPIL
+%
+% This script processes several calibration datasets, fitting a quadratic model 
+% to the relationship between actual (measured) and nominal (benchmark) values.
+% The fitting uses the OEFPIL algorithm (Optimal Estimation in Functional Problems
+% with Independent Linear Constraints) to properly account for uncertainties
+% in both the actual and nominal values.
+%
+% The analysis is based on the procedure described in the paper: 
+% "Determination of the Uncertainty of Length Measurement with a
+% Three-Coordinate Measuring Device" by Gejza Wimmer, Jakub Palenčár,
+% Miroslav Dovica, Rudolf Palenčár, Teodor Tóth, Viktor Witkovský, XXIV
+% IMEKO World Congress “Think Metrology”, August 26 - 29, 2024, Hamburg,
+% Germany, IMEKO 2024.
+%
+
+close all
+clear
+
+%% load NEW DATA
+load("WIMMER_Ddata_2025.mat")
+
+%% User settings: Significance levels and error bar settings
+phi = 0.025;              % Significance level for model confidence intervals (default 0.025)
+psi = 0.025;              % Significance level for measurement uncertainty intervals (default 0.025)
+ErrorBarSigmaRule = 1;    % Number of sigmas for error bars (default 1)
+SixSigmaRule = 10;        % Range multiplier for plotting fine grid (default 10)
+
+%% Define datasets and their display names
+datasetNames = {'X_data', 'Y_data', 'Z_data', 'R3D_PL_data', 'R3D_PP_data', ...
+                'R3D_ZL_data', 'R3D_ZP_data'};
+
+displayNames = {'X', 'Y', 'Z', 'R3DPL', 'R3DPP', 'R3DZL', 'R3DZP'};
+
+%% Initialize storage for results
+results = cell(1, length(datasetNames));
+
+%% Analyze each dataset individually
+for idx = 1:length(datasetNames)
+    
+    % Load dataset
+    data = eval(datasetNames{idx});
+    
+    % Extract raw measured data for possible extensions (currently not used inside makeDataAnalysis)
+    % These are the repeated measurements (triplets per position)
+    id_row_data = [1:3, 5:7, 9:11, 13:15, 17:19];
+    id_col_data = 3:7;
+    raw_data = data(id_row_data, id_col_data);
+
+    % Extract 'actual' measured values (average of 3 measurements for each position)
+    id_row_actual = [2, 6, 10, 14, 18];  % Use second row of each triplet
+    id_col_actual = 8;                   % Column with mean values
+    actual = data(id_row_actual, id_col_actual);
+
+    % Extract uncertainties of 'actual' measured values
+    id_row_actual_uncertainty = [2, 6, 10, 14, 18];
+    id_col_actual_uncertainty = 9;        % Column with standard deviations
+    ua = data(id_row_actual_uncertainty, id_col_actual_uncertainty);
+
+    % Extract 'nominal' (benchmark) values
+    id_row_nominal = [2, 6, 10, 14, 18];
+    id_col_nominal = 2;                   % Column with benchmark values
+    nominal = data(id_row_nominal, id_col_nominal);
+
+    % Extract uncertainties of 'nominal' values
+    id_row_nominal_uncertainty = [2, 6, 10, 14, 18];
+    id_col_nominal_uncertainty = 1;        % Column with uncertainties
+    un = data(id_row_nominal_uncertainty, id_col_nominal_uncertainty) / 1000;
+    % Note: Divide by 1000 to convert from micrometers (µm) to millimeters (mm)
+
+    % Perform analysis and store result
+    results{idx} = makeDataAnalysis(nominal, un, actual, ua, raw_data, ...
+                                    displayNames{idx}, ...
+                                    phi, psi, ErrorBarSigmaRule, SixSigmaRule);
+end
+
+##### SOURCE END #####
+-->
+</body>
+</html>
