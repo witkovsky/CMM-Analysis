@@ -62,8 +62,8 @@ plot(xx, yhat_minus - ci_minus, 'k--', 'DisplayName', 'Lower Bound (Shifted -)')
 plot(xx, yhat_plus + ci_plus, 'k--', 'DisplayName', 'Upper Bound (Shifted +)')
 
 xlabel('Actual value (mm)')
-ylabel('Nominal value (mm)')
-title(sprintf('%s - Calibrated Measurement Region', dataName))
+ylabel('Benchmark value (mm)')
+%title(sprintf('%s - Calibrated Measurement Region', dataName))
 legend('Location', 'northwest')
 hold off
 

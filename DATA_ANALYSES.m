@@ -49,7 +49,7 @@ for idx = 1:length(datasetNames)
 
     % Extract 'actual' measured values (average of 3 measurements for each position)
     id_row_actual = [2, 6, 10, 14, 18];  % Use second row of each triplet
-    id_col_actual = 8;                   % Column with mean values
+    id_col_actual = 8;                   % Column with mean valuesresult.   
     actual = data(id_row_actual, id_col_actual);
 
     % Extract uncertainties of 'actual' measured values

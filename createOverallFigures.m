@@ -28,6 +28,7 @@ XX = [ones(size(xx)), xx, xx.^2];
 % Predicted fitted nominal values and their confidence bounds
 yhat = XX * beta;
 ci = n_phi * sqrt(sum((XX * Ubeta) .* XX, 2));
+MPE = @(x) (1.8 + 3.33.*(x/1000))/1000;
 
 mu = result.mu;
 nu = result.nu;
@@ -43,8 +44,8 @@ plot(xx, yhat - ci, 'r--', 'DisplayName', 'Lower Confidence Bound')
 plot(xx, yhat + ci, 'r--', 'DisplayName', 'Upper Confidence Bound')
 
 xlabel('Actual value (mm)')
-ylabel('Nominal value (mm)')
-title(sprintf('%s - EIV Model: Observed vs Fitted Values', dataName))
+ylabel('Benchmark value (mm)')
+%title(sprintf('%s - EIV Model: Observed vs Fitted Values', dataName))
 legend('Location', 'northwest')
 hold off
 
@@ -55,13 +56,15 @@ savefig(sprintf('Fig_%s_Observed_vs_Fitted.fig', dataName));
 figure
 hold on
 grid on
-plot(xx, yhat - xx, 'b-', 'DisplayName', 'Fitted - Actual')
-plot(xx, yhat - xx - ci, 'r--', 'DisplayName', 'Lower Confidence Bound')
-plot(xx, yhat - xx + ci, 'r--', 'DisplayName', 'Upper Confidence Bound')
+%plot(xx, yhat - xx, 'b-', 'DisplayName', 'Fitted - Actual')
+plot(xx, yhat - xx - ci, 'r--', 'DisplayName', 'Lower Bound of Interval (D)')
+plot(xx, yhat - xx + ci, 'r--', 'DisplayName', 'Upper Bound of Interval (D)')
+plot(xx, MPE(xx), 'k--', 'DisplayName', 'Lower Bound of MPE')
+plot(xx, -MPE(xx), 'k--', 'DisplayName', 'Upper Bound of MPE')
 
 xlabel('Actual value (mm)')
-ylabel('Fitted - Actual (mm)')
-title(sprintf('%s - EIV Model: Fitted minus Actual', dataName))
+ylabel('Deviation (mm)')
+%title(sprintf('%s - EIV Model: Fitted minus Actual', dataName))
 legend('Location', 'northwest')
 hold off
 

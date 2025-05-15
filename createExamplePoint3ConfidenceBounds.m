@@ -39,8 +39,8 @@ plot(xx, yhat - ci, 'r--', 'DisplayName', 'Lower Bound')
 plot(xx, yhat + ci, 'r--', 'DisplayName', 'Upper Bound')
 
 xlabel('Actual value (mm)')
-ylabel('Nominal value (mm)')
-title(sprintf('%s - Point %d: Observed vs. Fitted Value', dataName, pointid))
+ylabel('Benchmark value (mm)')
+%title(sprintf('%s - Point %d: Observed vs. Fitted Value', dataName, pointid))
 legend('Location', 'northwest')
 hold off
 

@@ -58,7 +58,7 @@ hold on
 grid on
 
 % Main plots
-plot(xx, yhat - xx, 'b-', 'DisplayName', 'Fitted - Actual')
+%plot(xx, yhat - xx, 'b-', 'DisplayName', 'Fitted - Actual')
 plot(xx, yhat_minus - xx - ci_minus, 'k--', 'DisplayName', 'Lower Bound')
 plot(xx, yhat_plus - xx + ci_plus, 'k--', 'DisplayName', 'Upper Bound')
 
@@ -67,8 +67,8 @@ plot(xx, 0.0001 + 0.0004 * xx, 'r-.', 'DisplayName', '+Region D Limit')
 plot(xx, -(0.0001 + 0.0004 * xx), 'r-.', 'DisplayName', '-Region D Limit')
 
 xlabel('Actual value (mm)')
-ylabel('Fitted - Actual (mm)')
-title(sprintf('%s - Region D Plot', dataName))
+ylabel('Deviation (mm)')
+%title(sprintf('%s - Region D Plot', dataName))
 legend('Location', 'northwest')
 hold off
 

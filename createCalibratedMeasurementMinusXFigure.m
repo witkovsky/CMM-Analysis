@@ -53,13 +53,13 @@ ci_plus = n_phi * sqrt(sum((XX_plus * Ubeta) .* XX_plus, 2));
 figure
 hold on
 grid on
-plot(xx, yhat - xx, 'b-', 'DisplayName', 'Fitted - Actual')
+%plot(xx, yhat - xx, 'b-', 'DisplayName', 'Fitted - Actual')
 plot(xx, yhat_minus - xx - ci_minus, 'k--', 'DisplayName', 'Lower Bound (Shifted -)')
 plot(xx, yhat_plus - xx + ci_plus, 'k--', 'DisplayName', 'Upper Bound (Shifted +)')
 
 xlabel('Actual value (mm)')
-ylabel('Fitted - Actual (mm)')
-title(sprintf('%s - Calibrated Measurement (Fitted - Actual)', dataName))
+ylabel('Deviation (mm)')
+%title(sprintf('%s - Calibrated Measurement (Fitted - Actual)', dataName))
 legend('Location', 'northwest')
 hold off
 

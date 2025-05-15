@@ -46,8 +46,13 @@ yhat_plus = XX_plus * beta;
 ci_plus = n_phi * sqrt(sum((XX_plus * Ubeta) .* XX_plus, 2));
 
 % External tolerance lines (Region C limits)
-regionC_upper = (1.8 + 3.33 * xx / 1000) / 1000;
-regionC_lower = (-1.8 - 3.33 * xx / 1000) / 1000;
+% regionC_upper = (1.8 + 3.33 * xx / 1000) / 1000;
+% regionC_lower = (-1.8 - 3.33 * xx / 1000) / 1000;
+
+% External tolerance lines (Region C limits)
+xxx = [0 100 200 300 400 500 600];
+%Umeas = [ 1.9753 2.29938 2.610553 2.926446 3.245679 3.567357 3.890873 ]/1000;
+Umeas = @(x) 1.975337000000000e-03 +   3.184888571428573e-06.* x;
 
 %% Plot
 figure
@@ -55,19 +60,19 @@ hold on
 grid on
 
 % Main (fitted - actual) line
-plot(xx, yhat - xx, 'b-', 'DisplayName', 'Fitted - Actual')
+%plot(xx, yhat - xx, 'b-', 'DisplayName', 'Fitted - Actual')
 
 % Confidence bounds with device uncertainty
-plot(xx, yhat_minus - ci_minus - xx, 'k--', 'DisplayName', 'Lower Bound C')
-plot(xx, yhat_plus + ci_plus - xx, 'k--', 'DisplayName', 'Upper Bound C')
+plot(xx, yhat_minus - ci_minus - xx, 'r--', 'DisplayName', 'Lower Bound of Interval (C)')
+plot(xx, yhat_plus + ci_plus - xx, 'r--', 'DisplayName', 'Upper Bound of Interval (C)')
 
 % Region C tolerance limits
-plot(xx, regionC_upper, 'm--', 'DisplayName', '+Region C Limit')
-plot(xx, regionC_lower, 'm--', 'DisplayName', '-Region C Limit')
+plot(xx, Umeas(xx), 'k--', 'DisplayName', 'Upper Limit of U_{meas}')
+plot(xx, -Umeas(xx), 'k--', 'DisplayName', 'Lower Limit of U_{meas}')
 
-xlabel('x (mm)')
-ylabel('y - x (mm)')
-title(sprintf('%s - Confidence Region C', dataName))
+xlabel('Actual value (mm)')
+ylabel('Deviation (mm)')
+%title(sprintf('%s - Confidence Region C', dataName))
 legend('Location', 'northwest')
 hold off
 
